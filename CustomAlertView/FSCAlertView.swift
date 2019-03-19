@@ -38,6 +38,7 @@ class FSCAlertView: UIView,UITableViewDelegate,UITableViewDataSource {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         delegate?.alertViewSlectedAction(row: indexPath.row)
+        self.removeFromSuperview()
     }
     
     
@@ -58,6 +59,7 @@ class FSCAlertView: UIView,UITableViewDelegate,UITableViewDataSource {
         super.init(frame: frame)
         
         initView()
+        alertViewAnimation()
     }
     
     func initView() {
@@ -114,8 +116,16 @@ class FSCAlertView: UIView,UITableViewDelegate,UITableViewDataSource {
             make.height.equalTo(50*labelStrings.count)
             make.bottom.equalToSuperview()
         }
-        
-        
+    }
+    
+    func alertViewAnimation() {
+        let startScale = CGAffineTransform(scaleX: 0.1, y: 0.1)
+        backgroundView.alpha = 0
+        backgroundView.transform = startScale
+        UIViewPropertyAnimator(duration: 0.5, dampingRatio: 0.5) {
+            self.backgroundView.alpha = 1
+            self.backgroundView.transform = .identity
+            }.startAnimation()
     }
     
     required init?(coder aDecoder: NSCoder) {
