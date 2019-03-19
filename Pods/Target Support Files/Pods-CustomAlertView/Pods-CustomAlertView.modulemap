@@ -1,0 +1,6 @@
+module Pods_CustomAlertView {
+  umbrella header "Pods-CustomAlertView-umbrella.h"
+
+  export *
+  module * { export * }
+}
