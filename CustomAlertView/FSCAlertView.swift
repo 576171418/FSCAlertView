@@ -18,37 +18,13 @@ protocol FSCAlertViewDelegate {
 
 class FSCAlertView: UIView,UITableViewDelegate,UITableViewDataSource {
     
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return labelStrings.count
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = UITableViewCell(style: .default, reuseIdentifier: "cell")
-        cell.textLabel?.text = labelStrings[indexPath.row]
-        cell.textLabel?.textAlignment = .center
-        cell.textLabel?.textColor = UIColor.blue
-        cell.textLabel?.font = UIFont.systemFont(ofSize: 20)
-        return cell
-    }
-    
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 50
-    }
-    
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: true)
-        delegate?.alertViewSlectedAction(row: indexPath.row)
-        self.removeFromSuperview()
-    }
-    
-    
-    var backgroundView: UIView!
-    var titleLabel: UILabel!
-    var title: String
-    var messageLabel: UILabel!
-    var message: String
-    var tableView: UITableView!
-    var labelStrings: [String]
+    private var backgroundView: UIView!
+    private var titleLabel: UILabel!
+    private var title: String
+    private var messageLabel: UILabel!
+    private var message: String
+    private var tableView: UITableView!
+    private var labelStrings: [String]
     var delegate: FSCAlertViewDelegate?
     
     init(frame: CGRect, title: String, message: String, labelStrings: [String]) {
@@ -57,12 +33,9 @@ class FSCAlertView: UIView,UITableViewDelegate,UITableViewDataSource {
         self.labelStrings = labelStrings
         
         super.init(frame: frame)
-        
-        initView()
-        alertViewAnimation()
     }
     
-    func initView() {
+    private func initView() {
         self.backgroundColor = UIColor.lightGray
         self.alpha = 1
         
@@ -118,19 +91,48 @@ class FSCAlertView: UIView,UITableViewDelegate,UITableViewDataSource {
         }
     }
     
-    func alertViewAnimation() {
+    private func alertViewAnimation() {
         let startScale = CGAffineTransform(scaleX: 0.1, y: 0.1)
         backgroundView.alpha = 0
         backgroundView.transform = startScale
-        UIViewPropertyAnimator(duration: 0.5, dampingRatio: 0.5) {
+        UIViewPropertyAnimator(duration: 0.5, dampingRatio: 0.6) {
             self.backgroundView.alpha = 1
             self.backgroundView.transform = .identity
             }.startAnimation()
+    }
+    
+    func showAlertView(view: UIView) {
+        initView()
+        alertViewAnimation()
+        view.addSubview(self)
     }
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
+    //MARK: - TableViewDataSource and Delegate
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return labelStrings.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = UITableViewCell(style: .default, reuseIdentifier: "cell")
+        cell.textLabel?.text = labelStrings[indexPath.row]
+        cell.textLabel?.textAlignment = .center
+        cell.textLabel?.textColor = UIColor.blue
+        cell.textLabel?.font = UIFont.systemFont(ofSize: 20)
+        return cell
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 50
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+        delegate?.alertViewSlectedAction(row: indexPath.row)
+        self.removeFromSuperview()
+    }
     
 }
